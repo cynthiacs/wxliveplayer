@@ -1,0 +1,4 @@
+/* pages/player/player.wxss */
+.liveview{
+  margin-left: 50rpx;
+}

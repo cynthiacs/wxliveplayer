@@ -1,0 +1,31 @@
+/**index.wxss**/
+page {
+  height: 100%;
+}
+
+.container {
+  width: 100%;
+  background-image: url(http://www.yangxudong.com:8080/bg1.png); 
+  background-size: 100% 100%;
+  background-color: cadetblue;
+  height: 100%;
+}
+
+.logo {
+  width: 128px;
+  height: 128px;
+  align-items: center;
+  position: relative;
+}
+
+.button-sp-area{
+  margin: 0 auto;
+  width: 60%;
+}
+
+.btn-area{
+  margin-top: 60rpx;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 30rpx;
+}

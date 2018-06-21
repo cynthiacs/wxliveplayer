@@ -1,0 +1,7 @@
+<!--index.wxml-->
+<view class="container">
+   <image class='logo' src='../../icon/logo.png'/> 
+   <view class='button-sp-area'>
+   <button type="default" bindtap='openWebview' >开启</button>
+   </view>
+</view>
