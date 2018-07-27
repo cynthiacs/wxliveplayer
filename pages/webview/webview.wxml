@@ -3,5 +3,6 @@
   <!-- <block wx:for="{{logs}}" wx:for-item="log">
     <text class="log-item">{{index + 1}}. {{log}}</text>
   </block> -->
-  <web-view src="http://139.224.128.15:8085/login"></web-view>
+   <!-- <web-view src="https://www.yangxudong.com/u3MWKG2s1T.txt"></web-view>  -->
+    <web-view src="http://127.0.0.1:8085/login"></web-view>  
 </view>
