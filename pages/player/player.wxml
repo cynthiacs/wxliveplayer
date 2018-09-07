@@ -1,5 +1,5 @@
 <!--pages/player/player.wxml-->
 <view class='liveview'>
-<live-player id="mylive"
-src="{{liveSource}}" mode="live" autoplay='true' bindstatechange="statechange" binderror="error" style="width: 100%; height: 100%;"></live-player>
+  <live-player id="mylive" src="{{liveSource}}" mode="live" autoplay='false' bindstatechange="statechange" binderror="error" style="width: 100%; height: 50%;">
+  </live-player>
 </view>

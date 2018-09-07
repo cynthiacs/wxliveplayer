@@ -1,0 +1,39 @@
+/* pages/login/login.wxss */
+page {
+  height: 100%;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  /* background-image: url(http://www.yangxudong.com/bg2.png);  */
+  background-size: 100% 100%;
+  background-color: cadetblue;
+  
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-icon {
+  width: 128px;
+  height: 128px;
+}
+
+.logo-text {
+  color: white;
+}
+
+.inputText {
+  width: 80%;
+  margin-top: 11px;
+  border-bottom: 1px solid #b3b3b3;
+}
+
+.loginBtn {
+  width: 80%;
+  background-color: white;
+}

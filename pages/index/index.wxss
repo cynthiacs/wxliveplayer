@@ -5,7 +5,7 @@ page {
 
 .container {
   width: 100%;
-  background-image: url(http://www.yangxudong.com:8080/bg1.png); 
+  /* background-image: url(http://www.yangxudong.com/bg1.png);  */
   background-size: 100% 100%;
   background-color: cadetblue;
   height: 100%;

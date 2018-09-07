@@ -2,13 +2,14 @@
   "pages": [
     "pages/index/index",
     "pages/webview/webview",
-    "pages/player/player"
+    "pages/player/player",
+    "pages/login/login",
+    "pages/pusherlist/pusherlist"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#5F9EA0",
     "navigationBarTitleText": "",
-    "navigationBarTextStyle": "black",
-    "navigationStyle":"custom"
+    "navigationBarTextStyle": "black"
   }
 }

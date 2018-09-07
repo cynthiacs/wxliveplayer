@@ -29,7 +29,8 @@ var pageObject = {
   },
   openWebview: function (e) {
     wx.navigateTo({
-      url: '../webview/webview',
+      // url: '../webview/webview',
+      url: '../login/login',
     })
   }
 }
