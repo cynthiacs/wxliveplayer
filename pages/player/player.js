@@ -14,6 +14,10 @@ Page({
 
   statechange(e) {
     console.log('livePlayer code', e.detail.code)
+    if(e.detail.code == 2103) {
+      wx.navigateBack({
+      })
+    }
   },
 
   error(e) {
@@ -29,6 +33,9 @@ Page({
       liveSource: options.url+'?'+options.auth+'='+options.key,
       id: options.id,
       groupid: options.gid
+    })
+    wx.setNavigationBarTitle({
+      title: options.devicename + ' ' + options.nick ,
     })
   },
 

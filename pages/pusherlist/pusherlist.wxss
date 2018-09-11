@@ -7,7 +7,7 @@ page {
   background: #fff;
   border-bottom: 1px solid #efefef;
   display: flex;
-  height: 90rpx;
+  height: 130rpx;
   align-items: center;
   padding: 0 25rpx;
   font-size: 32rpx;
@@ -15,21 +15,20 @@ page {
 
 .list_item_name {
   flex: 1;
+  padding: 0 10rpx;
 }
 
 .icon_down {
-  width: 35rpx;
-  height: 35rpx;
+  width: 40rpx;
+  height: 40rpx;
   transition: transform 0.3s;
 }
-
-/* .list_item_box{ height: 0; transition:height 0.3s; overflow: hidden; } .list_item_box_show{ height: 500rpx; } */
 
 .list_item_name_box {
   background: #fff;
   border-bottom: 1px solid #efefef;
   font-size: 30rpx;
-  height: 80rpx;
+  height: 120rpx;
   display: flex;
   align-items: center;
   padding: 0 25rpx 0 50rpx;
@@ -37,8 +36,8 @@ page {
 
 .other {
   display: flex;
-  height: 80rpx;
-  padding: 0 25rpx 0 50rpx;
+  height: 110rpx;
+  padding: 0 25rpx 0 75rpx;
   align-items: center;
   font-size: 30rpx;
   color: #666;

@@ -10,14 +10,23 @@ Page({
     account: null,
     psw: null,
     list: [],
-    groupList: []
+    groupList: [],
+    hidewaitdialog: true,
+    topushing_id: null,
+    topushing_gid: null
   },
 
-  starlive: function(id, groupid) {
+  starlive: function (json) {
+    var id = json["id"]
+    var groupid = json["group_id"]
     console.log("id:"+id+", groupid:"+groupid)
+    var that = this
       this.data.cmproxy.start_push_media(id,
         groupid, "90s", function(msg) {
           console.log("startpush return msg:"+msg)
+          if(that.data.hidewaitdialog) {
+            return
+          }
           var jsonResult = JSON.parse(msg)
           var url = jsonResult["result"]["url"]
           console.log(url)
@@ -32,7 +41,11 @@ Page({
           wx.navigateTo({
             url: '../player/player?url=' + arr[0]
             + '&auth=' + arrauth[0] + '&key=' + arrauth[1]
-            + '&id=' + id + '&gid=' + groupid
+            + '&id=' + id + '&gid=' + groupid + '&nick='+json["nick"]
+            + '&devicename=' + json["device_name"]
+          })
+          that.setData({
+            hidewaitdialog: true
           })
       })
   },
@@ -85,6 +98,10 @@ Page({
     this.data.cmproxy.connect(this.data.account,
       this.data.account, "Unknow Location", function (msg) {
         console.log("connect msg:" + msg)
+        // var groupnick = that.data.cmproxy.get_group_nick()
+        wx.setNavigationBarTitle({
+          title: that.data.account// + "(" + groupnick + ")"
+        })
       })
   },
 
@@ -111,7 +128,13 @@ updateList: function() {
             }
             if(m == nickList.length) {
               var newjsonstr = JSON.stringify(templist[i])
-              nickList.push(JSON.parse(newjsonstr)) //add nick
+              var newjson = JSON.parse(newjsonstr)
+              if (newjson.stream_status == "pushing") {
+                newjson.ispushing = true
+              } else {
+                newjson.ispushing = false
+              }
+              nickList.push(newjson) //add nick
               this.logfunc("updateList", "add nick nickList")
               console.log(nickList)
               break groupfor
@@ -121,7 +144,13 @@ updateList: function() {
         if(k == deviceList.length) {
           var newjsonstr = JSON.stringify(templist[i])
           let nicklisttemp = []
-          nicklisttemp.push(JSON.parse(newjsonstr))
+          var newjson = JSON.parse(newjsonstr)
+          if (newjson.stream_status == "pushing") {
+            newjson.ispushing = true
+          } else {
+            newjson.ispushing = false
+          }
+          nicklisttemp.push(newjson)
           this.logfunc("updatelist", "add device nicklisttemp:")
           console.log(nicklisttemp)
 
@@ -140,7 +169,13 @@ updateList: function() {
       this.logfunc("updateList", "add group jsonstr " + JSON.stringify(templist[i]))
       var newjsonstr = JSON.stringify(templist[i])
       let nicklisttemp = []
-      nicklisttemp.push(JSON.parse(newjsonstr))
+      var newjson = JSON.parse(newjsonstr)
+      if (newjson.stream_status == "pushing") {
+        newjson.ispushing = true
+      } else {
+        newjson.ispushing = false
+      }
+      nicklisttemp.push(newjson)
       this.logfunc("updatelist", "nicklisttemp:")
       console.log(nicklisttemp)
 
@@ -197,7 +232,12 @@ updateList: function() {
     let index = e.currentTarget.dataset.index
     let list = this.data.groupList
     let nickjson = list[groupindex].devicelist[deviceindex].nicklist[index]
-    this.starlive(nickjson["id"], nickjson["group_id"])
+    this.setData({
+      topushing_id: nickjson["id"],
+      topushing_gid: nickjson["group_id"],
+      hidewaitdialog: false
+    })
+    this.starlive(nickjson)
   },
 
   // //让所有的展开项，都变为收起
@@ -238,6 +278,7 @@ updateList: function() {
         account: options.account,
         psw: options.psw
       })
+
       this.initPullNodes()
     } else {
       this.logfunc("onLoad", "getcmproxy failed")
@@ -273,6 +314,17 @@ updateList: function() {
   onUnload: function () {
     this.logfunc("", "onUnload")
     var tempdata = this.data
+    if (!tempdata.hidewaitdialog) {
+      this.setData({
+        hidewaitdialog: true
+      })
+      if (tempdata.cmproxy != null) {
+        tempdata.cmproxy.stop_push_media(tempdata.topushing_id,
+          tempdata.topushing_gid, function (msg) {
+            console.log("stop_push_media:" + msg)
+          })
+      }
+    }
     if (tempdata.cmproxy != null) {
       tempdata.cmproxy.disconnect(function (msg) {
         console.log("disconnect success")//不生效
