@@ -121,8 +121,20 @@ updateList: function() {
             let nickList = deviceList[k]["nicklist"]
             for(var m = 0; m < nickList.length; m++) {
               if(templist[i]["nick"] == nickList[m]["nick"]) {
-                console.log("pusherlist updateList: there is the same node, ignore")
-                this.logfunc("updateList", "duplicate node " + JSON.stringify(templist[i]))
+                if(templist[i]["id"] != nickList[m]["id"]) {
+                  var newjsonstr = JSON.stringify(templist[i])
+                  var newjson = JSON.parse(newjsonstr)
+                  if (newjson.stream_status == "pushing") {
+                    newjson.ispushing = true
+                  } else {
+                    newjson.ispushing = false
+                  }
+                  nickList.push(newjson) //add nick
+                  console.log("pusherlist updateList: there is the same nick node")
+                }else {
+                  console.log("pusherlist updateList: there is the same node, ignore")
+                  this.logfunc("updateList", "duplicate node " + JSON.stringify(templist[i]))
+                }
                 break groupfor // duplicate
               }
             }

@@ -4,7 +4,7 @@
     <image class='logo-icon' src='../../icon/logo.png' />
     <text class='logo-text'>直播助手</text>
   </view>
-  <input class="inputText" placeholder="请输入账号" value="A491625" bindinput="userInput" />
+  <input class="inputText" placeholder="请输入账号" value="A791730" bindinput="userInput" />
   <input class="inputText" placeholder="请输入密码" value="123456" bindinput="pswInput" />
   <button class="loginBtn" size="{{primarySize}}" loading="{{loading}}" plain="{{plain}}" disabled="{{disabled}}" bindtap="login">登录</button>
 </view>

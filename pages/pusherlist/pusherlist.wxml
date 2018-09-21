@@ -4,14 +4,14 @@
 <view class='list_box' wx:for='{{groupList}}' wx:key='this' wx:for-item='groupItem' wx:for-index='groupIndex'>
   <view class='list'>
     <view class='list_name_box' catchtap='listTap' data-groupIndex='{{groupIndex}}'>
-    <image src='../../icon/list_icon1.png' class='icon_down'></image>
+    <image src='../../icon/list_icon1.png' class='icon_list'></image>
       <text class='list_item_name'>{{groupItem.group_nick}}</text>
       <image src='../../icon/icon_up.png' class='icon_down {{groupItem.show&&"icon_down_rotate"}}'></image>
     </view>
     <view class='list_item_box' wx:if='{{groupItem.show}}'>
       <view class='list_item' wx:for='{{groupItem.devicelist}}' wx:key='this' wx:for-item='deviceItem' wx:for-index='deviceindex' catchtap='listItemTap' data-deviceindex='{{deviceindex}}' data-groupIndex='{{groupIndex}}'>
         <view class='list_item_name_box'>
-          <image src='../../icon/list_icon2.png' class='icon_down'></image>
+          <image src='../../icon/list_icon2.png' class='icon_list'></image>
           <text class='list_item_name'>{{deviceItem.device_name}}</text>
           <image src='../../icon/icon_up.png' class='icon_down {{deviceItem.show&&"icon_down_rotate"}}'></image>
         </view>

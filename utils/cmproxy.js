@@ -115,6 +115,28 @@ function CMProxy(pubkey=null) {
 
 }
 
+CMProxy.prototype.open = function(host) {
+    var ws_addr = "wss://" + host + "/wss"
+    this.ws = wx.connectSocket({
+      url: ws_addr,
+    })
+
+    wx.onSocketOpen(this._onopen)
+    wx.onSocketClose(this._onclose)
+    wx.onSocketError(this._onerror)
+    wx.onSocketMessage(this._onmessage)
+}
+
+CMProxy.prototype.close = function() {
+    if (this.ws != null) {
+        wx.closeSocket({
+        })
+        this.ws = null;
+    }
+}
+
+
+
 CMProxy.prototype.login = function(account, password, listener) {
   
     this.cm_user = new CMUser(account, password);
@@ -229,34 +251,30 @@ CMProxy.prototype.stop_push_media = function(target_id, target_gid, listener) {
 }
 
 CMProxy.prototype._send_request = function(method, params, listener) {
-    var request = {};
-    request.jsonrpc = "2.0";
-    request.method = method;
-    if (params != null)
-        request.params = params;
-    // request.id must be a string for server required
-    request.id = this.serial+"";
-    var req_str = JSON.stringify(request);
-    console.log(req_str)
-
-    if(this._encrypt != null) {
-        req_str = this._encrypt.encrypt(req_str);
-    }
+  var request = {};
+  request.jsonrpc = "2.0";
+  request.method = method;
+  if (params != null)
+    request.params = params;
+  // request.id must be a string for server required
+  request.id = this.serial + "";
+  var req_str = JSON.stringify(request);
   console.log(req_str)
+
+  if (this._encrypt != null) {
+    req_str = this._encrypt.encrypt(req_str);
+  }
   this.ws.send({
     data: req_str
-  });
-    // wx.sendSocketMessage({
-    //   data: [],
-    // })
-    this.waiting_replies[this.serial] = listener
-    console.log('add listener to waiting replies')
-    console.log(this.waiting_replies)
-    this.sent_requests[this.serial] = method
-    console.log('add method to sent requests')
-    console.log(this.sent_requests)
+  })
+  this.waiting_replies[this.serial] = listener
+  console.log('add listener to waiting replies')
+  console.log(this.waiting_replies)
+  this.sent_requests[this.serial] = method
+  console.log('add method to sent requests')
+  console.log(this.sent_requests)
 
-    ++this.serial;
+  ++this.serial;
 }
 
 CMProxy.prototype._handle_reply = function(jrpc){
@@ -302,11 +320,9 @@ CMProxy.prototype._handle_reply = function(jrpc){
 CMProxy.prototype._handle_notify = function(jstr) {
     var action = jstr["action"];
     var payload = jstr["payload"];
-    console.log(action)
     switch(action) {
     case 'nodes_change':
         if (this.on_nodeslist_change != null)
-          console.log(payload)
             this.on_nodeslist_change(JSON.stringify(payload));
         break;
     case 'stream_exception':
@@ -322,103 +338,18 @@ CMProxy.prototype._handle_notify = function(jstr) {
     }
 }
 
-/*
-CMProxy.prototype._onmessage = function(evt){
-    return (evt)=>{
-        console.log('onmessage:' + evt.data + ', type:' + typeof(evt.data));
-
-        var jstring = JSON.parse(evt.data.toString())
-
-        if('id' in jstring) {
-            this._handle_reply(jstring);
-        } else if ('action' in jstring) {
-            this._handle_notify(jstring);
-        } else {
-            console.log('unknown message');
-        }
-    }
-}
-*/
-
 CMProxy.prototype._update_cm_field = function(field, new_value, listener) {
     var method = 'UpdateField';
     var params = {"field":field, "value":new_value};
     this._send_request(method, params, listener);
 }
 
-CMProxy.prototype._onopen = function() {
-    console.log('onopen');
-}
-
-CMProxy.prototype._onclose = function() {
-    console.log('onclose');
-}
-
-CMProxy.prototype._onerror = function(error) {
-    console.log('onerror');
-}
-
-CMProxy.prototype.ws_connect = function(host, port) {
-    var ws_addr = "wss://" + host + "/wss"
-    this.ws = wx.connectSocket({
-      url: ws_addr,
-    })
-
-    wx.onSocketOpen(this._onopen)
-    wx.onSocketClose(this._onclose)
-    wx.onSocketError(this._onerror)
-    wx.onSocketMessage(this._onmessage)
-
-    // this.ws.onmessage = this._onmessage
-    // this.ws.onopen = this._onopen
-    // this.ws.onclose = this._onclose
-    // this.ws.onerror = this._onerror
-}
-
-CMProxy.prototype.close = function() {
-    if (this.ws != null) {
-        // this.ws.close();
-        wx.closeSocket({
-        })
-        this.ws = null;
-    }
-}
-
-
-// NOTE: you should import jsencrypt becore cmproxy.js
-//<script src="static/js/jsencrypt.min.js"></script>
-
-var cm_pubkey = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC9ymEH5ac+mMQLitp6y+j4vrSC'
-+ 'HC3ixbMm2aj6m8gzaL2sD5I8OwK/Dl58mHT1XENYWRueWW6Nb3/aejuRaMUO4sVW'
-+ '6H0YJHIUnlGHqAU4Nf3iHh0aw5dDNil26rf/zUsZ2PHZJy7kQv6oPMF9EcnhzP7J'
-+ '0R4tYwEl39BPeN46vQIDAQAB'
-/*
-var cmproxy = null;
-//cmproxy = new CMProxy(cm_pubkey);
-if (cmproxy != null)
-    cmproxy.close();
-cmproxy = new CMProxy();
-//cmproxy._connect('127.0.0.1', '9001')
-
-cmproxy.ws_connect('www.yangxudong.com', '9001')
-
-cmproxy.set_onopen(function() {
-    console.log("my set open callback");
-});
-
-cmproxy.set_onclose(function() {
-    console.log("my set close callback");
-});
-
-cmproxy.set_onerror(function(error) {
-    console.log("my set error callback");
-});
-*/
 module.exports = {
   CMProxy: CMProxy,
   login: CMProxy.prototype.login,
   logout: CMProxy.prototype.logout,
-  ws_connect: CMProxy.prototype.ws_connect,
+  open: CMProxy.prototype.open,
+  close: CMProxy.prototype.close,
   set_onopen: CMProxy.prototype.set_onopen,
   set_onclose: CMProxy.prototype.set_onclose,
   set_onerror: CMProxy.prototype.set_onerror,
@@ -427,5 +358,4 @@ module.exports = {
   disconnect: CMProxy.prototype.disconnect,
   start_push_media: CMProxy.prototype.start_push_media,
   stop_push_media: CMProxy.prototype.stop_push_media,
-  close: CMProxy.prototype.close
 }

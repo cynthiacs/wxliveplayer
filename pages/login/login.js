@@ -9,12 +9,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    username: 'A491625',
+    username: 'A791730',
     psw: '123456',
-    cmproxy: null,
-    haslogined: false,
-    hasshow: false,
-    hashide: false
+    cmproxy: null
   },
 
   /**
@@ -43,15 +40,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    // console.log("onShow:haslogined = "+this.data.haslogined)
-    // var tempdata = this.data
-    // if (tempdata.haslogined && tempdata.cmproxy != null) {
-    //   tempdata.cmproxy.logout(tempdata.username, function(msg){
-    //     console.log("logout success")
-    //     tempdata.haslogined = false
-    //     tempdata.cmproxy.close()
-    //   })
-    // }
   },
 
   userInput: function (e) {
@@ -74,28 +62,57 @@ Page({
       })
     } else {
       var tempThis = this.data;
-      this.data.cmproxy.set_onopen(function () {
-        console.log("websocket onopen")
+      if(app.globalData.websocket_connected) {
         tempThis.cmproxy.login(tempThis.username,
-         tempThis.psw, function (msg){
-          console.log("login return")
-           tempThis.haslogined = true
-          wx.navigateTo({
-            url: '../pusherlist/pusherlist?account=' + tempThis.username
-              + '&psw=' + tempThis.psw,
+          tempThis.psw, function (msg) {
+            console.log("login return " + msg)
+            var jsonResult = JSON.parse(msg)
+            if (jsonResult["error"] != null) {
+              console.log("login return error")
+              wx.showToast({
+                title: '用户名或者密码不正确',
+                icon: 'none'
+              })
+            } else {
+              wx.navigateTo({
+                url: '../pusherlist/pusherlist?account=' + tempThis.username
+                  + '&psw=' + tempThis.psw,
+              })
+            }
           })
+      }else {
+        this.data.cmproxy.set_onopen(function () {
+          console.log("websocket onopen")
+          tempThis.cmproxy.login(tempThis.username,
+            tempThis.psw, function (msg) {
+              console.log("login return " + msg)
+              var jsonResult = JSON.parse(msg)
+              if (jsonResult["error"] != null) {
+                console.log("login return error")
+                wx.showToast({
+                  title: '用户名或者密码不正确',
+                  icon: 'none'
+                })
+              } else {
+                wx.navigateTo({
+                  url: '../pusherlist/pusherlist?account=' + tempThis.username
+                    + '&psw=' + tempThis.psw,
+                })
+              }
+            })
         })
-      })
-      this.data.cmproxy.set_onclose(function () {
-        console.log("websocket onclose")
-      })
-      this.data.cmproxy.set_onerror(function () {
-        console.log("websocket onerror")
-      })
+        this.data.cmproxy.set_onclose(function () {
+          app.globalData.websocket_connected = false
+          console.log("websocket onclose")
+        })
+        this.data.cmproxy.set_onerror(function () {
+          console.log("websocket onerror")
+        })
 
-      this.data.cmproxy.ws_connect('www.yangxudong.com', '9001')
-      console.log("after connect")
-
+        this.data.cmproxy.open('www.yangxudong.com')
+        console.log("after open")
+        app.globalData.websocket_connected = true
+      }
     }
   },
 

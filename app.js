@@ -38,6 +38,7 @@ App({
   },
   globalData: {
     userInfo: null,
-    cmproxy: null
+    cmproxy: null,
+    websocket_connected: false
   }
 })

@@ -19,6 +19,12 @@ page {
 }
 
 .icon_down {
+  width: 50rpx;
+  height: 35rpx;
+  transition: transform 0.3s;
+}
+
+.icon_list {
   width: 40rpx;
   height: 40rpx;
   transition: transform 0.3s;
