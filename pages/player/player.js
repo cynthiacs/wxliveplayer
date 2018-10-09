@@ -14,7 +14,7 @@ Page({
 
   statechange(e) {
     console.log('livePlayer code', e.detail.code)
-    if(e.detail.code == 2103) {
+    if(e.detail.code == -2301) {
       wx.navigateBack({
       })
     }
@@ -28,6 +28,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.setKeepScreenOn({
+      keepScreenOn: true,
+    })
     this.setData({
       cmproxy: app.globalData.cmproxy,
       liveSource: options.url+'?'+options.auth+'='+options.key,
@@ -78,6 +81,9 @@ Page({
    */
   onUnload: function () {
     console.log("player:onUnload")
+    wx.setKeepScreenOn({
+      keepScreenOn: false,
+    })
     this.ctx.stop({
       success: res => {
         console.log('stop success')
